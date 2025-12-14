@@ -15,6 +15,7 @@ class RegistrationStatus(str, Enum):
     PENDENTE = "pendente"
     APROVADA = "aprovada"
     RECUSADA = "recusada"
+    AGUARDANDO_PAGAMENTO = "aguardando_pagamento"
 
 class FriendshipStatus(str, Enum):
     PENDENTE = "pendente"
@@ -92,6 +93,7 @@ class RegistrationResponse(BaseModel):
     user_id: int
     status: RegistrationStatus
     created_at: datetime
+    event: Optional[EventResponse] = None
     class Config:
         from_attributes = True
 
