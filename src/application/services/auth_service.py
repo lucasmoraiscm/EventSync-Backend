@@ -14,6 +14,7 @@ class AuthService:
 
     def register_user(self, user_in: schemas.UserCreate) -> models.User:
         existing_user = user_repo.get_user_by_email(self.db, user_in.email)
+        
         if existing_user:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

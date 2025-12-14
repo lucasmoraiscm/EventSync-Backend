@@ -2,12 +2,18 @@ from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from jose import jwt, JWTError
 from starlette.middleware.base import BaseHTTPMiddleware
+import re
 
 from src.core.config import settings
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        if request.method == "OPTIONS":
+            return await call_next(request)
+        
+        path = request.url.path
+        
         public_exact_routes = [
             "/",
             "/docs",
@@ -17,15 +23,26 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/auth/register"
         ]
 
-        if request.url.path in public_exact_routes:
+        if path in public_exact_routes:
             return await call_next(request)
         
-        if request.url.path.startswith("/events") and request.method == "GET":
-            return await call_next(request)
-
-        if request.url.path.startswith("/users") and request.method == "GET":
-            if request.url.path != "/users/me":
+        if request.method == "GET":
+            if re.match(r"^/events/?$", path):
                 return await call_next(request)
+            
+            if re.match(r"^/events/\d+/?$", path):
+                return await call_next(request)
+
+        if request.method == "GET" and re.match(r"^/users/\d+/?$", path):
+             return await call_next(request)
+        
+        # if request.url.path.startswith("/events") and request.method == "GET":
+        #     if request.url.path != "/events" and request.url.path != f"/events/{int}":
+        #         return await call_next(request)
+
+        # if request.url.path.startswith("/users") and request.method == "GET":
+        #     if request.url.path != "/users/me":
+        #         return await call_next(request)
             
         auth_header = request.headers.get("Authorization")
 
