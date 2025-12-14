@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 
 from src.domain import models, schemas
-from src.persistence.repositories import event_repo, registration_repo
+from src.persistence.repositories import event_repo, registration_repo, user_repo
 
 
 class RegistrationService:
@@ -95,3 +95,14 @@ class RegistrationService:
             )
         
         return registration_repo.update_registration_status(self.db, registration, schemas.RegistrationStatus.APROVADA)
+
+    def list_registrations_user(self, user_id: int):
+        user = user_repo.get_user_by_id(self.db, user_id)
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail="Usuário não encontrado"
+            )
+
+        return registration_repo.get_registrations_by_user_id(self.db, user.id)

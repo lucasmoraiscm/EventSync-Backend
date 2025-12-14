@@ -26,3 +26,6 @@ def update_registration_status(db: Session, registration: Registration, new_stat
     db.commit()
     db.refresh(registration)
     return registration
+
+def get_registrations_by_user_id(db: Session, user_id: int) -> Registration:
+    return db.query(Registration).filter(Registration.user_id == user_id).all()

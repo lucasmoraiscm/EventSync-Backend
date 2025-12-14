@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from typing import List
 
 from src.infra.storage.database import get_db
 from src.domain import models, schemas
@@ -48,3 +49,12 @@ def get_virtual_card(
 ):
     registration_controller = RegistrationController(db)
     return registration_controller.get_virtual_card(registration_id, current_user)
+
+
+@router.get("/me", response_model=List[schemas.RegistrationResponse])
+def list_my_registrations(
+    db: Session = Depends(get_db), 
+    current_user = Depends(get_current_user)
+):
+    registration_controller = RegistrationController(db)
+    return registration_controller.list_my_registrations(current_user.id)

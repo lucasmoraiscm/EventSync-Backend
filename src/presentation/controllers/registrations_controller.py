@@ -29,3 +29,8 @@ class RegistrationController:
         checkin_service = CheckinService(self.db)
         return checkin_service.get_virtual_card(registration_id, user)
     
+
+    def list_my_registrations(self, user_id: int):
+        registration_service = RegistrationService(self.db)
+        return registration_service.list_registrations_user(user_id)
+    
