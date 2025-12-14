@@ -26,9 +26,24 @@ class EventController:
         return event_service.update_event(event_id, event, user)
     
 
-    def list_events(self, skip: int, limit: int):
+    def list_events(
+        self, 
+        skip: int, 
+        limit: int,
+        titulo: str = None,
+        tipo: str = None,
+        data_inicio: str = None,
+        organizador_id: int = None
+    ):
         event_service = EventService(self.db)
-        return event_service.list_events(skip, limit)
+        return event_service.list_events(
+            skip, 
+            limit, 
+            titulo, 
+            tipo, 
+            data_inicio,
+            organizador_id
+        )
 
     
     def get_event_details(self, event_id: int):

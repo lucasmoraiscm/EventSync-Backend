@@ -1,4 +1,7 @@
 from sqlalchemy.orm import Session
+from typing import Optional
+from datetime import datetime
+from sqlalchemy import or_
 
 from src.domain.models import Event
 
@@ -8,9 +11,30 @@ def create_event(db: Session, event: Event):
     db.refresh(event)
     return event
 
-def get_events(db: Session, skip: int = 0, limit: int = 100):
-    # filtros aqui
-    return db.query(Event).filter(Event.status == "publicado").offset(skip).limit(limit).all()
+def get_events(
+    db: Session, 
+    skip: int = 0, 
+    limit: int = 100,
+    titulo: Optional[str] = None,
+    tipo: Optional[str] = None,
+    data_inicio: Optional[datetime] = None,
+    organizador_id: Optional[int] = None
+):
+    query = db.query(Event).filter(Event.status == "publicado")
+
+    if titulo:
+        query = query.filter(Event.titulo.ilike(f"%{titulo}%"))
+    
+    if tipo:
+        query = query.filter(Event.tipo == tipo)
+        
+    if data_inicio:
+        query = query.filter(Event.data_inicio >= data_inicio)
+
+    if organizador_id:
+        query = query.filter(Event.organizador_id == organizador_id)
+
+    return query.offset(skip).limit(limit).all()
 
 def get_event_by_id(db: Session, event_id: int):
     return db.query(Event).filter(Event.id == event_id).first()

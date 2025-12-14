@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
+from datetime import datetime
 
 from src.infra.storage.database import get_db
 from src.domain import schemas, models
@@ -35,11 +36,22 @@ def edit_event(
 @router.get("/", response_model=List[schemas.EventResponse])
 def list_events(
     skip: int = 0, 
-    limit: int = 100, 
+    limit: int = 100,
+    titulo: Optional[str] = Query(None, description="Filtrar por título"),
+    tipo: Optional[str] = Query(None, description="Filtrar por tipo (gratuito/pago)"),
+    data_inicio: Optional[datetime] = Query(None, description="Filtrar eventos após esta data"),
+    organizador_id: Optional[int] = Query(None, description="Filtrar eventos de um organizador específico"),
     db: Session = Depends(get_db)
 ):
     event_controller = EventController(db)
-    return event_controller.list_events(skip, limit)
+    return event_controller.list_events(
+        skip, 
+        limit, 
+        titulo, 
+        tipo, 
+        data_inicio, 
+        organizador_id
+    )
 
 
 @router.get("/{event_id}", response_model=schemas.EventResponse)

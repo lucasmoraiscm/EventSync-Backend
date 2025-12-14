@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
-from typing import List
+from typing import List, Optional
+from datetime import datetime
 
 from src.domain import models, schemas
 from src.persistence.repositories import event_repo
@@ -38,8 +39,25 @@ class EventService:
         return event_repo.update_event(self.db, event, update_data)
 
 
-    def list_events(self, skip: int = 0, limit: int = 100) -> List[models.Event]:
-        return event_repo.get_events(self.db, skip=skip, limit=limit)
+    def list_events(
+        self, 
+        skip: int = 0, 
+        limit: int = 100,
+        titulo: Optional[str] = None,
+        tipo: Optional[str] = None,
+        data_inicio: Optional[datetime] = None,
+        organizador_id: Optional[int] = None
+    ) -> List[models.Event]:
+        
+        return event_repo.get_events(
+            self.db, 
+            skip, 
+            limit,
+            titulo,
+            tipo,
+            data_inicio,
+            organizador_id
+        )
     
 
     def get_event_details(self, event_id: int) -> models.Event:
