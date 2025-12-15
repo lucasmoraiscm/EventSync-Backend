@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 from enum import Enum
 
@@ -56,6 +56,7 @@ class EventCreate(BaseModel):
     titulo: str
     descricao: str
     local: str
+    local_url: Optional[str] = None
     data_inicio: datetime
     data_fim: datetime
     tipo: str = "gratuito" # gratuito/pago
@@ -70,6 +71,7 @@ class EventResponse(EventCreate):
     id: int
     organizador_id: int
     status: EventStatus
+    organizador: Optional[UserResponse] = None
     class Config:
         from_attributes = True
 
@@ -77,8 +79,10 @@ class EventUpdate(BaseModel):
     titulo: Optional[str] = None
     descricao: Optional[str] = None
     local: Optional[str] = None
+    local_url: Optional[str] = None
     data_inicio: Optional[datetime] = None
     data_fim: Optional[datetime] = None
+    tipo: Optional[str] = None
     preco: Optional[float] = None
     exige_aprovacao: Optional[bool] = None
     max_inscricoes: Optional[int] = None
@@ -87,6 +91,16 @@ class EventUpdate(BaseModel):
     banner_url: Optional[str] = None
     status: Optional[EventStatus] = None
 
+class CheckinRequest(BaseModel):
+    user_id: int
+
+class CheckinResponse(BaseModel):
+    id: int
+    timestamp: datetime
+    metodo: str
+    class Config:
+        from_attributes = True
+
 class RegistrationResponse(BaseModel):
     id: int
     event_id: int
@@ -94,11 +108,10 @@ class RegistrationResponse(BaseModel):
     status: RegistrationStatus
     created_at: datetime
     event: Optional[EventResponse] = None
+    user: Optional[UserResponse] = None
+    checkins: List[CheckinResponse] = []
     class Config:
         from_attributes = True
-
-class CheckinRequest(BaseModel):
-    user_id: int
 
 class ReviewCreate(BaseModel):
     nota: int = Field(..., ge=1, le=5)
