@@ -1,4 +1,4 @@
-# EventSync Backend
+# EventSync - Backend
 O EventSync é uma API robusta desenvolvida em Python com FastAPI para a gestão completa de eventos. O sistema permite que organizadores criem e giram eventos, enquanto os participantes podem inscrever-se, interagir socialmente, realizar check-ins e obter certificados.
 
 ## Tecnologias Utilizadas
