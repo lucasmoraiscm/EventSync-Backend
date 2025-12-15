@@ -93,6 +93,16 @@ def publish_event(
     return event_controller.publish_event(event_id, current_user)
 
 
+@router.post("/{event_id}/finish", response_model=schemas.EventResponse)
+def finish_event(
+    event_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    event_controller = EventController(db)
+    return event_controller.finish_event(event_id, current_user)
+
+
 @router.post("/{event_id}/register", response_model=schemas.RegistrationResponse)
 def register_in_event(
     event_id: int, 

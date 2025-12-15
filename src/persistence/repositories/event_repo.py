@@ -20,19 +20,22 @@ def get_events(
     data_inicio: Optional[datetime] = None,
     organizador_id: Optional[int] = None
 ):
-    query = db.query(Event).filter(Event.status == "publicado")
-
-    if titulo:
-        query = query.filter(Event.titulo.ilike(f"%{titulo}%"))
-    
-    if tipo:
-        query = query.filter(Event.tipo == tipo)
-        
-    if data_inicio:
-        query = query.filter(Event.data_inicio >= data_inicio)
+    query = db.query(Event)
 
     if organizador_id:
         query = query.filter(Event.organizador_id == organizador_id)
+
+    else:
+        query = query.filter(Event.status != "rascunho")
+
+        if titulo:
+            query = query.filter(Event.titulo.ilike(f"%{titulo}%"))
+        
+        if tipo:
+            query = query.filter(Event.tipo == tipo)
+            
+        if data_inicio:
+            query = query.filter(Event.data_inicio >= data_inicio)
 
     return query.offset(skip).limit(limit).all()
 

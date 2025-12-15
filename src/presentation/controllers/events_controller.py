@@ -66,6 +66,11 @@ class EventController:
         return event_service.change_event_status(event_id, schemas.EventStatus.PUBLICADO, user)
     
 
+    def finish_event(self, event_id: int, user: models.User):
+        event_service = EventService(self.db)
+        return event_service.change_event_status(event_id, schemas.EventStatus.FINALIZADO, user)
+    
+
     def register_in_event(self, event_id: int, user_id: int):
         registration_service = RegistrationService(self.db)
         return registration_service.register_user(event_id, user_id)
