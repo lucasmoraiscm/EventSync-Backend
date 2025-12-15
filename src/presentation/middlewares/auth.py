@@ -35,15 +35,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
 
         if request.method == "GET" and re.match(r"^/users/\d+/?$", path):
              return await call_next(request)
-        
-        # if request.url.path.startswith("/events") and request.method == "GET":
-        #     if request.url.path != "/events" and request.url.path != f"/events/{int}":
-        #         return await call_next(request)
-
-        # if request.url.path.startswith("/users") and request.method == "GET":
-        #     if request.url.path != "/users/me":
-        #         return await call_next(request)
-            
+          
         auth_header = request.headers.get("Authorization")
 
         if not auth_header:
