@@ -15,6 +15,12 @@ class RegistrationService:
 
         if not event:
             raise HTTPException(status_code=404, detail="Evento não encontrado")
+        
+        if event.status != schemas.EventStatus.INSCRICOES_ABERTAS:
+            raise HTTPException(
+                status_code=400, 
+                detail="As inscrições para este evento não estão abertas."
+            )
 
         existing = registration_repo.get_registration(self.db, user_id, event_id)
 
